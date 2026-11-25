@@ -1,0 +1,29 @@
+.thumbnail {
+  position: relative;
+  flex-shrink: 0;
+}
+
+.image,
+.placeholder {
+  width: 100%;
+  height: 100%;
+  object-fit: cover;
+}
+
+.placeholder {
+  background: var(--color-light-gray);
+}
+
+.like {
+  position: absolute;
+}
+
+.sm .like {
+  top: 0;
+  right: 0;
+}
+
+.lg .like {
+  top: 8px;
+  right: 8px;
+}

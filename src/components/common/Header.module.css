@@ -1,0 +1,50 @@
+.header {
+  position: relative;
+  display: flex;
+  align-items: center;
+  height: var(--header-height);
+  /* 1920px에서 Figma와 같은 160px, 화면이 좁아지면 24px까지 줄어든다. */
+  padding: 0 max(24px, calc((100% - 1600px) / 2));
+  background: var(--color-white);
+}
+
+.logo {
+  font: var(--font-title1);
+  color: var(--color-text-primary);
+}
+
+.nav {
+  position: absolute;
+  left: 50%;
+  top: 0;
+  display: flex;
+  gap: 56px;
+  height: 100%;
+  transform: translateX(-50%);
+}
+
+.navItem {
+  position: relative;
+  display: flex;
+  align-items: center;
+  font: var(--font-body1);
+  color: var(--color-text-primary);
+}
+
+/* Figma: 텍스트 바로 아래 1px Primary 바 (top 56px) */
+.navItem::after {
+  content: '';
+  position: absolute;
+  left: 0;
+  right: 0;
+  top: 56px;
+  height: 1px;
+  background: var(--color-primary);
+  transform: scaleX(0);
+  transition: transform 0.2s ease;
+}
+
+.navItem.active::after,
+.navItem:hover::after {
+  transform: scaleX(1);
+}

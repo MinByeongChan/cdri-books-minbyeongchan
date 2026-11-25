@@ -1,0 +1,31 @@
+.page {
+  width: var(--content-width);
+  margin: 0 auto;
+  padding: 80px 0 120px;
+}
+
+.title {
+  font: var(--font-title2);
+  color: var(--color-text-title);
+}
+
+.count {
+  margin-top: 24px;
+}
+
+.status,
+.error {
+  padding-top: 120px;
+  font: var(--font-caption);
+  text-align: center;
+  color: var(--color-text-secondary);
+}
+
+.error {
+  color: var(--color-red);
+}
+
+/* Figma 내가 찜한 책: 제목(160) → 건수(204) → 목록(264) */
+.title + .count {
+  margin-top: 20px;
+}

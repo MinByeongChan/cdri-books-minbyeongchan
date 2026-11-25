@@ -1,0 +1,167 @@
+.item {
+  border-bottom: 1px solid var(--color-divider);
+}
+
+/* ───────── 접힌 상태 (Figma BookListItem 754:201, 960×100) ───────── */
+.summary {
+  display: flex;
+  align-items: center;
+  height: 99px; /* + 하단 구분선 1px = 100px */
+  padding: 0 16px 0 48px;
+}
+
+.info {
+  display: flex;
+  align-items: center;
+  gap: 16px;
+  width: 408px;
+  min-width: 0;
+  margin-left: 48px;
+  white-space: nowrap;
+}
+
+.title {
+  overflow: hidden;
+  text-overflow: ellipsis;
+  font: var(--font-title3);
+  color: var(--color-text-primary);
+}
+
+.author {
+  flex-shrink: 0;
+  max-width: 160px;
+  overflow: hidden;
+  text-overflow: ellipsis;
+  font: var(--font-body2);
+  color: var(--color-text-secondary);
+}
+
+.price {
+  margin-left: auto;
+  font: var(--font-title3);
+  color: var(--color-text-primary);
+  white-space: nowrap;
+}
+
+.actions {
+  display: flex;
+  gap: 8px;
+  margin-left: 56px;
+}
+
+.buyButton,
+.detailButton {
+  width: 115px;
+}
+
+.buyButtonWide {
+  width: 240px;
+}
+
+.chevron {
+  margin-left: 5px;
+  transform: rotate(90deg);
+  transition: transform 0.2s ease;
+}
+
+.chevronUp {
+  transform: rotate(-90deg);
+}
+
+/* ───────── 펼친 상태 (Figma BookListItemDetail 754:308, 960×344) ───────── */
+.detail {
+  display: flex;
+  padding: 24px 16px 39px 54px; /* + 하단 구분선 1px = 344px */
+}
+
+.detailBody {
+  width: 360px;
+  margin-left: 32px;
+  padding-top: 20px;
+}
+
+.detailHeading {
+  display: flex;
+  align-items: center;
+  gap: 16px;
+}
+
+.detailTitle {
+  font: var(--font-h3-bold);
+  color: var(--color-text-primary);
+}
+
+.detailAuthor {
+  font: var(--font-caption-medium);
+  color: var(--color-text-subtitle);
+}
+
+.introLabel {
+  margin-top: 16px;
+  font: var(--font-body2-bold);
+  color: var(--color-text-primary);
+}
+
+.intro {
+  margin-top: 12px;
+  font: var(--font-tiny);
+  color: var(--color-text-primary);
+  white-space: pre-wrap;
+  word-break: keep-all;
+}
+
+.detailSide {
+  display: flex;
+  flex-direction: column;
+  align-items: flex-end;
+  justify-content: space-between;
+  margin-left: auto;
+  padding-top: 2px;
+}
+
+.purchase {
+  display: flex;
+  flex-direction: column;
+  align-items: flex-end;
+  gap: 28px;
+}
+
+.prices {
+  display: flex;
+  flex-direction: column;
+  gap: 8px;
+  margin: 0;
+  padding-right: 4px;
+}
+
+.priceRow {
+  display: flex;
+  align-items: center;
+  justify-content: flex-end;
+  gap: 8px;
+}
+
+.priceRow dt {
+  width: 37px;
+  font: var(--font-tiny);
+  color: var(--color-text-subtitle);
+  text-align: right;
+}
+
+.priceRow dd {
+  margin: 0;
+}
+
+.originalPrice {
+  font: 350 18px / 26px var(--font-family);
+  color: var(--color-text-primary);
+}
+
+.strike {
+  text-decoration: line-through;
+}
+
+.salePrice {
+  font: var(--font-h3-bold);
+  color: var(--color-text-primary);
+}

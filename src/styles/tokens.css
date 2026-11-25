@@ -1,0 +1,43 @@
+/* Figma "Style" 프레임(753:96)의 디자인 토큰 */
+:root {
+  /* Palette */
+  --color-primary: #4880ee;
+  --color-red: #e84118;
+  --color-gray: #dadada;
+  --color-light-gray: #f2f4f6;
+  --color-white: #ffffff;
+  --color-black: #222222;
+  --color-divider: #d2d6da;
+  --color-ui-gray: #b1b8c0;
+
+  /* Text */
+  --color-text-title: #1a1e27;
+  --color-text-primary: #353c49;
+  --color-text-secondary: #6d7582;
+  --color-text-subtitle: #8d94a0;
+
+  /* Typography */
+  --font-family: 'Noto Sans KR', system-ui, -apple-system, sans-serif;
+  --font-title1: 700 24px / 24px var(--font-family);
+  --font-title2: 700 22px / 24px var(--font-family);
+  --font-title3: 700 18px / 18px var(--font-family);
+  --font-h3-bold: 700 18px / 26px var(--font-family);
+  --font-body1: 500 20px / 20px var(--font-family);
+  --font-body2: 500 14px / 14px var(--font-family);
+  --font-body2-bold: 700 14px / 26px var(--font-family);
+  --font-caption: 500 16px / 16px var(--font-family);
+  --font-caption-medium: 500 14px / 22px var(--font-family);
+  --font-body-medium: 500 16px / 24px var(--font-family);
+  --font-tiny: 500 10px / 16px var(--font-family);
+
+  /* Radius / Shadow */
+  --radius-sm: 8px;
+  --radius-lg: 24px;
+  --radius-full: 100px;
+  --shadow-popup: 0 4px 14px 6px rgba(151, 151, 151, 0.15);
+  --shadow-dropdown: 0 0 4px 0 rgba(0, 0, 0, 0.25);
+
+  /* Layout */
+  --content-width: 960px;
+  --header-height: 80px;
+}

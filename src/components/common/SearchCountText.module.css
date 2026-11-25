@@ -1,0 +1,11 @@
+.countText {
+  display: flex;
+  gap: 16px;
+  font: var(--font-body-medium);
+  color: var(--color-text-primary);
+}
+
+.count {
+  font-style: normal;
+  color: var(--color-primary);
+}

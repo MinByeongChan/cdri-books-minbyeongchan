@@ -1,0 +1,65 @@
+/* Figma SearchBox 754:141 (568×103) / 검색기록 펼침 3000:647 */
+.searchBox {
+  width: 568px;
+}
+
+.title {
+  font: var(--font-title2);
+  color: var(--color-text-title);
+}
+
+.row {
+  display: flex;
+  align-items: flex-start;
+  gap: 16px;
+  margin-top: 28px;
+}
+
+/* 검색 기록이 펼쳐져도 아래 레이아웃이 밀리지 않도록 자리는 50px로 고정하고 위에 띄운다. */
+.fieldSlot {
+  position: relative;
+  flex-shrink: 0;
+  width: 480px;
+  height: 50px;
+}
+
+.field {
+  position: absolute;
+  inset: 0 0 auto;
+  z-index: 10;
+  background: var(--color-light-gray);
+  border-radius: var(--radius-full);
+}
+
+.field.expanded {
+  border-radius: var(--radius-lg);
+}
+
+.inputRow {
+  display: flex;
+  align-items: center;
+  gap: 11px;
+  height: 50px;
+  padding: 10px 10px 10px 10px;
+}
+
+.input {
+  flex: 1;
+  min-width: 0;
+  font: var(--font-caption);
+  color: var(--color-black);
+}
+
+.input::placeholder {
+  color: var(--color-text-subtitle);
+}
+
+/* 브라우저 기본 검색 지우기(x) 버튼 숨김 */
+.input::-webkit-search-cancel-button {
+  appearance: none;
+}
+
+.detailSlot {
+  position: relative;
+  margin-top: 8px;
+}

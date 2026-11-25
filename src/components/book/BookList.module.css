@@ -1,0 +1,14 @@
+.list {
+  margin-top: 36px;
+}
+
+.sentinel {
+  height: 1px;
+}
+
+.loading {
+  padding: 24px 0;
+  font: var(--font-body2);
+  color: var(--color-text-subtitle);
+  text-align: center;
+}
