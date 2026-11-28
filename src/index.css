@@ -13,7 +13,7 @@ body {
 }
 
 body {
-  min-width: var(--content-width);
+  min-width: calc(var(--content-width) + var(--page-gutter) * 2);
   font-family: var(--font-family);
   color: var(--color-text-primary);
   background: var(--color-white);

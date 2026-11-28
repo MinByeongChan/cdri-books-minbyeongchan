@@ -39,5 +39,7 @@
 
   /* Layout */
   --content-width: 960px;
+  /* 화면이 좁아져도 콘텐츠 양옆에 최소한 이만큼은 비워 둔다 */
+  --page-gutter: 60px;
   --header-height: 80px;
 }

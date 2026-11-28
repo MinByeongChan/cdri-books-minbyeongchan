@@ -1,7 +1,8 @@
 .page {
-  width: var(--content-width);
+  /* 콘텐츠 960px + 양옆 여백. 화면이 넓으면 margin auto로 가운데에 놓이고, 좁아지면 여백(padding)만큼은 남는다. */
+  width: calc(var(--content-width) + var(--page-gutter) * 2);
   margin: 0 auto;
-  padding: 80px 0 120px;
+  padding: 80px var(--page-gutter) 120px;
 }
 
 .title {
