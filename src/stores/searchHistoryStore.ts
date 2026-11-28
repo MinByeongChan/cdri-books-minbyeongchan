@@ -1,8 +1,8 @@
-import { createPersistentStore, useStore } from '@/lib/createPersistentStore'
+import { create } from 'zustand'
+import { persist } from 'zustand/middleware'
+import { syncAcrossTabs } from './syncAcrossTabs'
 
 export const MAX_SEARCH_HISTORY = 8
-
-export const searchHistoryStore = createPersistentStore<string[]>('cdri-books:search-history', [])
 
 /** 최신 검색어를 맨 앞에 두고, 중복은 제거하고, 최대 8개를 넘으면 오래된 것부터 버린다. */
 export function addHistory(history: string[], keyword: string): string[] {
@@ -11,10 +11,25 @@ export function addHistory(history: string[], keyword: string): string[] {
   return [trimmed, ...history.filter((item) => item !== trimmed)].slice(0, MAX_SEARCH_HISTORY)
 }
 
-export const searchHistoryActions = {
-  add: (keyword: string) => searchHistoryStore.setState((prev) => addHistory(prev, keyword)),
-  remove: (keyword: string) =>
-    searchHistoryStore.setState((prev) => prev.filter((item) => item !== keyword)),
+interface SearchHistoryState {
+  history: string[]
+  add: (keyword: string) => void
+  remove: (keyword: string) => void
 }
 
-export const useSearchHistory = () => useStore(searchHistoryStore)
+/** 검색 기록. localStorage에 저장해서 브라우저를 다시 열어도 유지된다. */
+export const useSearchHistoryStore = create<SearchHistoryState>()(
+  persist(
+    (set) => ({
+      history: [],
+      add: (keyword) => set((state) => ({ history: addHistory(state.history, keyword) })),
+      remove: (keyword) => set((state) => ({ history: state.history.filter((item) => item !== keyword) })),
+    }),
+    {
+      name: 'cdri-books:search-history',
+      partialize: (state) => ({ history: state.history }),
+    },
+  ),
+)
+
+syncAcrossTabs(useSearchHistoryStore)

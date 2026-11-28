@@ -39,14 +39,17 @@ pnpm lint       # oxlint
 | --- | --- | --- |
 | UI | React 19, TypeScript | 과제 필수 스택 |
 | 서버 상태 | TanStack Query v5 | 과제 필수 스택. `useInfiniteQuery`로 페이지네이션·캐시·요청 취소를 한 번에 처리 |
+| 클라이언트 상태 | Zustand (`persist`) | 검색 기록·찜 목록을 localStorage에 저장. 셀렉터로 필요한 값만 구독 |
 | 라우팅 | React Router | 검색 화면 / 내가 찜한 책 화면 분리, 검색 조건을 URL에 보관 |
 | 스타일 | CSS Modules + CSS 변수 | 런타임 비용이 없고, Figma 토큰을 CSS 변수로 그대로 옮기기 쉬움 |
 | 빌드 | Vite | 빠른 개발 서버, 코드 스플리팅 기본 지원 |
 | 테스트 | Vitest, Testing Library | Vite 설정을 그대로 쓰고, 사용자 동작 기준으로 테스트 작성 |
 | 린트 | oxlint | Vite 템플릿 기본값 |
 
-클라이언트 상태(검색 기록, 찜 목록)는 별도 상태 관리 라이브러리를 쓰지 않았습니다.
-두 값 모두 "localStorage에 저장되는 배열 하나"라서, `useSyncExternalStore` 기반의 작은 스토어(`src/lib/createPersistentStore.ts`, 약 70줄)로 충분하다고 판단했습니다.
+클라이언트 상태(검색 기록, 찜 목록)는 Zustand로 관리합니다.
+- `persist` 미들웨어가 localStorage 저장과 복원을 맡습니다. 저장 코드를 직접 짜지 않아도 됩니다.
+- 상태와 이를 바꾸는 액션(`add`, `remove`, `toggle`)을 한 스토어에 함께 둡니다. 컴포넌트는 셀렉터로 필요한 값만 꺼내 씁니다.
+- Context Provider 없이 어디서든 쓸 수 있고, gzip 기준 약 1KB입니다.
 
 <br />
 
@@ -93,8 +96,7 @@ src
 │   ├── book/            # 책 목록 관련: BookList, BookListItem, BookThumbnail, LikeButton
 │   └── search/          # 검색 관련: SearchBox, SearchHistory, DetailSearchPopup, TargetSelect
 ├── hooks/               # useBookSearch(React Query), useBookSearchState(URL), useInfiniteScroll, useOutsideClick
-├── lib/                 # createPersistentStore (localStorage + useSyncExternalStore)
-├── stores/              # 검색 기록, 찜 목록 스토어
+├── stores/              # Zustand 스토어: 검색 기록, 찜 목록, 탭 간 동기화(syncAcrossTabs)
 ├── pages/               # SearchPage, WishlistPage
 ├── styles/tokens.css    # Figma 디자인 토큰(색상, 타이포그래피)
 ├── utils/               # 가격 포맷, 할인 여부 등 순수 함수
@@ -130,7 +132,7 @@ src
 - **화면과 로직을 분리했습니다.** API 호출은 `api/`, 서버 상태는 `hooks/useBookSearch`, URL 상태는 `hooks/useBookSearchState`, 로컬 저장 상태는 `stores/`에 두었습니다. 페이지 컴포넌트는 이것들을 조합만 합니다.
 - **규칙은 순수 함수로 뽑았습니다.** "검색 기록 최대 8개, 중복 제거"(`addHistory`), "할인가가 -1이면 할인 없음"(`hasDiscount`) 같은 규칙을 순수 함수로 분리해서 단위 테스트를 붙였습니다.
 - **타입을 API 응답에 맞췄습니다.** API 응답 타입(`Book`, `BookSearchResponse`)을 정의했고, 검색 조건 `target`은 문자열 대신 유니언 타입(`'title' | 'person' | 'publisher'`)으로 다룹니다.
-- **테스트는 사용자 동작 기준으로 썼습니다.** `SearchPage.test.tsx`에서 검색, 상세보기, 할인가 미노출, 찜 토글, 상세 검색, API 오류를 확인합니다. 단위 테스트를 합쳐 15개입니다.
+- **테스트는 사용자 동작 기준으로 썼습니다.** `SearchPage.test.tsx`에서 검색, 상세보기, 할인가 미노출, 찜 토글, 상세 검색, API 오류를 확인합니다. 스토어(찜 토글·저장·탭 간 동기화)와 순수 함수 단위 테스트를 합쳐 19개입니다.
 
 ### 상태 관리 및 API 연동
 
@@ -138,7 +140,7 @@ src
 | --- | --- | --- |
 | 검색 결과 | TanStack Query (`useInfiniteQuery`) | 서버 데이터. 캐시, 페이지 누적, 중복 요청 제거를 라이브러리에 맡김 |
 | 검색어·검색 조건 | URL 쿼리스트링 (`?query=&target=`) | 새로고침, 뒤로가기, 링크 공유 시에도 같은 결과를 보여줌 |
-| 검색 기록, 찜 목록 | localStorage 스토어 | 브라우저를 다시 열어도 유지해야 함 |
+| 검색 기록, 찜 목록 | Zustand + `persist` (localStorage) | 브라우저를 다시 열어도 유지해야 함. 다른 탭에서 바꿔도 `storage` 이벤트로 다시 읽어 옴 |
 | 팝업 열림, 입력 중인 값, 펼침 여부 | 컴포넌트 `useState` | 그 컴포넌트만 아는 UI 상태 |
 
 - 쿼리 키는 `['books', 'search', { query, target }]`입니다. 같은 검색어라도 전체 검색과 상세 검색은 다른 캐시로 구분합니다.
@@ -148,7 +150,7 @@ src
 
 ### 성능 최적화
 - **리렌더링 범위를 줄였습니다.**
-  - 찜 상태는 `useSyncExternalStore` + 셀렉터(`useIsWished(bookId)`)로 책 한 권 단위로 구독합니다. 하트 하나를 눌러도 그 책의 버튼만 다시 그려집니다.
+  - 찜 상태는 Zustand 셀렉터(`useIsWished(bookId)`)로 책 한 권 단위로 구독합니다. 하트 하나를 눌러도 그 책의 버튼만 다시 그려집니다.
   - `BookListItem`과 `LikeButton`은 `memo`로 감쌌습니다. 무한 스크롤로 다음 페이지가 붙어도 기존 줄은 다시 그려지지 않습니다.
 - **네트워크 요청을 줄였습니다.**
   - 무한 스크롤은 스크롤 이벤트 대신 `IntersectionObserver`를 씁니다. 목록 끝 200px 전에 미리 불러옵니다.

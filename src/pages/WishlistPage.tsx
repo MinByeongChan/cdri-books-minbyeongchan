@@ -3,11 +3,11 @@ import { BookList } from '@/components/book/BookList'
 import { NoData } from '@/components/common/NoData'
 import { SearchCountText } from '@/components/common/SearchCountText'
 import { PAGE_SIZE } from '@/hooks/useBookSearch'
-import { useWishlist } from '@/stores/wishlistStore'
+import { useWishlistStore } from '@/stores/wishlistStore'
 import styles from './Page.module.css'
 
 export default function WishlistPage() {
-  const wishlist = useWishlist()
+  const wishlist = useWishlistStore((state) => state.books)
   // 찜 목록은 로컬에 다 있지만, 검색 결과와 같은 방식으로 10개씩 이어서 보여준다.
   const [visibleCount, setVisibleCount] = useState(PAGE_SIZE)
 

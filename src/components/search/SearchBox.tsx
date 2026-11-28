@@ -3,7 +3,7 @@ import type { SearchTarget } from '@/api/types'
 import searchIcon from '@/assets/icons/search.svg'
 import { Button } from '@/components/common/Button'
 import { useOutsideClick } from '@/hooks/useOutsideClick'
-import { searchHistoryActions, useSearchHistory } from '@/stores/searchHistoryStore'
+import { useSearchHistoryStore } from '@/stores/searchHistoryStore'
 import { cx } from '@/utils/cx'
 import { DetailSearchPopup } from './DetailSearchPopup'
 import { SearchHistory } from './SearchHistory'
@@ -33,7 +33,9 @@ export function SearchBox({ query, target, onSearch, onDetailSearch }: SearchBox
     setKeyword(appliedKeyword)
   }
 
-  const history = useSearchHistory()
+  const history = useSearchHistoryStore((state) => state.history)
+  const addHistory = useSearchHistoryStore((state) => state.add)
+  const removeHistory = useSearchHistoryStore((state) => state.remove)
   const fieldRef = useRef<HTMLDivElement>(null)
   const inputRef = useRef<HTMLInputElement>(null)
 
@@ -47,7 +49,7 @@ export function SearchBox({ query, target, onSearch, onDetailSearch }: SearchBox
   const runSearch = (value: string) => {
     const trimmed = value.trim()
     if (!trimmed) return
-    searchHistoryActions.add(trimmed)
+    addHistory(trimmed)
     setKeyword(trimmed)
     setHistoryOpen(false)
     inputRef.current?.blur()
@@ -94,7 +96,7 @@ export function SearchBox({ query, target, onSearch, onDetailSearch }: SearchBox
               <SearchHistory
                 items={history}
                 onSelect={runSearch}
-                onRemove={searchHistoryActions.remove}
+                onRemove={removeHistory}
               />
             )}
           </form>

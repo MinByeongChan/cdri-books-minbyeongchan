@@ -2,8 +2,8 @@ import { QueryClient, QueryClientProvider } from '@tanstack/react-query'
 import { render, screen, within } from '@testing-library/react'
 import userEvent from '@testing-library/user-event'
 import { MemoryRouter } from 'react-router'
-import { searchHistoryStore } from '@/stores/searchHistoryStore'
-import { wishlistStore } from '@/stores/wishlistStore'
+import { useSearchHistoryStore } from '@/stores/searchHistoryStore'
+import { useWishlistStore } from '@/stores/wishlistStore'
 import { createBook, createResponse } from '@/test/fixtures'
 import SearchPage from './SearchPage'
 
@@ -35,8 +35,8 @@ beforeEach(() => {
   fetchMock.mockResolvedValue(
     new Response(JSON.stringify(createResponse([createBook()], true, 21)), { status: 200 }),
   )
-  searchHistoryStore.setState([])
-  wishlistStore.setState([])
+  useSearchHistoryStore.setState({ history: [] })
+  useWishlistStore.setState({ books: [] })
 })
 
 afterEach(() => {
@@ -63,7 +63,7 @@ describe('SearchPage', () => {
     expect(lastRequestUrl().searchParams.get('query')).toBe('하루키')
     expect(lastRequestUrl().searchParams.get('size')).toBe('10')
     expect(lastRequestUrl().searchParams.has('target')).toBe(false)
-    expect(searchHistoryStore.getSnapshot()).toEqual(['하루키'])
+    expect(useSearchHistoryStore.getState().history).toEqual(['하루키'])
   })
 
   it('상세보기를 누르면 펼쳐져 책 소개와 원가/할인가를 보여준다', async () => {
@@ -94,10 +94,10 @@ describe('SearchPage', () => {
     renderPage('/?query=하루키')
 
     await user.click(await screen.findByRole('button', { name: '노르웨이의 숲 찜하기' }))
-    expect(wishlistStore.getSnapshot()).toHaveLength(1)
+    expect(useWishlistStore.getState().books).toHaveLength(1)
 
     await user.click(screen.getByRole('button', { name: '노르웨이의 숲 찜 해제' }))
-    expect(wishlistStore.getSnapshot()).toHaveLength(0)
+    expect(useWishlistStore.getState().books).toHaveLength(0)
   })
 
   it('상세 검색은 target을 붙여 검색하고 전체 검색창을 비운다', async () => {
