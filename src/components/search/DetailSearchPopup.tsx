@@ -39,9 +39,9 @@ export function DetailSearchPopup({ initialQuery, initialTarget = 'title', onSea
 
   return (
     <dialog open className={styles.popup} aria-label="상세 검색">
-      <button type="button" className={styles.close} aria-label="상세 검색 닫기" onClick={onClose}>
+      <Button variant="ghost" className={styles.close} aria-label="상세 검색 닫기" onClick={onClose}>
         <img src={closeIcon} alt="" width={11.67} height={11.67} />
-      </button>
+      </Button>
       <form onSubmit={handleSubmit}>
         <div className={styles.fields}>
           <TargetSelect value={target} onChange={setTarget} />

@@ -4,6 +4,7 @@ import likeFill from '@/assets/icons/like-fill.svg'
 import likeLine from '@/assets/icons/like-line.svg'
 import likeSmallOff from '@/assets/icons/like-small-off.svg'
 import likeSmallOn from '@/assets/icons/like-small-on.svg'
+import { Button } from '@/components/common/Button'
 import { useIsWished, useWishlistStore } from '@/stores/wishlistStore'
 import { getBookId } from '@/utils/book'
 import { cx } from '@/utils/cx'
@@ -27,8 +28,8 @@ export const LikeButton = memo(function LikeButton({ book, size = 'md', classNam
   const icon = ICONS[size]
 
   return (
-    <button
-      type="button"
+    <Button
+      variant="ghost"
       className={cx(styles.likeButton, className)}
       aria-pressed={isWished}
       aria-label={`${book.title} 찜하기`}
@@ -38,6 +39,6 @@ export const LikeButton = memo(function LikeButton({ book, size = 'md', classNam
       }}
     >
       <img src={isWished ? icon.on : icon.off} alt="" width={icon.px} height={icon.px} />
-    </button>
+    </Button>
   )
 })

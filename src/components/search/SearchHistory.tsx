@@ -1,4 +1,5 @@
 import closeIcon from '@/assets/icons/close.svg'
+import { Button } from '@/components/common/Button'
 import styles from './SearchHistory.module.css'
 
 interface SearchHistoryProps {
@@ -12,17 +13,17 @@ export function SearchHistory({ items, onSelect, onRemove }: SearchHistoryProps)
     <ul className={styles.history} aria-label="최근 검색어">
       {items.map((keyword) => (
         <li key={keyword} className={styles.item}>
-          <button type="button" className={styles.keyword} onClick={() => onSelect(keyword)}>
+          <Button variant="ghost" className={styles.keyword} onClick={() => onSelect(keyword)}>
             {keyword}
-          </button>
-          <button
-            type="button"
+          </Button>
+          <Button
+            variant="ghost"
             className={styles.remove}
             aria-label={`${keyword} 검색 기록 삭제`}
             onClick={() => onRemove(keyword)}
           >
             <img src={closeIcon} alt="" width={24} height={24} />
-          </button>
+          </Button>
         </li>
       ))}
     </ul>

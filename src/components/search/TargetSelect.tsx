@@ -1,6 +1,7 @@
 import { useCallback, useId, useRef, useState, type KeyboardEvent } from 'react'
 import type { SearchTarget } from '@/api/types'
 import arrowIcon from '@/assets/icons/select-arrow.svg'
+import { Button } from '@/components/common/Button'
 import { useOutsideClick } from '@/hooks/useOutsideClick'
 import { cx } from '@/utils/cx'
 import styles from './TargetSelect.module.css'
@@ -48,9 +49,9 @@ export function TargetSelect({ value, onChange }: TargetSelectProps) {
 
   return (
     <div ref={rootRef} className={styles.select}>
-      <button
+      <Button
         ref={triggerRef}
-        type="button"
+        variant="ghost"
         className={styles.trigger}
         aria-expanded={open}
         aria-controls={open ? listId : undefined}
@@ -60,19 +61,19 @@ export function TargetSelect({ value, onChange }: TargetSelectProps) {
       >
         {selected.label}
         <img src={arrowIcon} alt="" width={20} height={20} className={cx(styles.arrow, open && styles.arrowOpen)} />
-      </button>
+      </Button>
       {open && (
         <ul id={listId} className={styles.options}>
           {others.map((option) => (
             <li key={option.value}>
-              <button
-                type="button"
+              <Button
+                variant="ghost"
                 className={styles.option}
                 onClick={() => select(option.value)}
                 onKeyDown={handleKeyDown}
               >
                 {option.label}
-              </button>
+              </Button>
             </li>
           ))}
         </ul>

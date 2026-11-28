@@ -118,7 +118,7 @@ src
   - 상세 검색 팝업(360×160): 버튼 아래 15px, 가로 가운데 정렬
 
 **컴포넌트는 역할별로 나눴습니다.**
-- `Button` / `LinkButton`: `variant`(primary·light·outline)와 `size`(md·sm)만으로 화면의 모든 버튼을 표현합니다. 구매하기는 새 탭 이동이라 의미상 `<a>`인 `LinkButton`으로 만들었습니다.
+- `Button` / `LinkButton`: 프로젝트의 모든 버튼은 이 컴포넌트로 만듭니다(직접 `<button>`을 쓰지 않음). `variant`(primary·light·outline·ghost)와 `size`(md·sm)로 화면의 모든 버튼을 표현합니다. `ghost`는 찜 하트, 닫기, 드롭다운 항목처럼 배경 없이 아이콘이나 글자만 있는 버튼입니다. 덕분에 `type="button"` 기본값과 키보드 포커스 표시가 한 곳에서 관리됩니다. 구매하기는 새 탭 이동이라 의미상 `<a>`인 `LinkButton`으로 만들었습니다.
 - `BookList`: 데이터를 어디서 가져오는지 모릅니다. 검색 결과(API)와 찜 목록(localStorage)이 같은 컴포넌트를 씁니다.
 - `BookThumbnail`: 목록(48×68)과 상세(210×280)에서 `size`만 바꿔서 씁니다. 찜 버튼도 여기에 포함됩니다.
 - `SearchCountText`, `NoData`: 문구만 props로 바꿔서 검색 화면과 찜 화면에서 같이 씁니다.
