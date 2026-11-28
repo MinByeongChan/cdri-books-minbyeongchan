@@ -19,35 +19,7 @@ export const BookListItem = memo(function BookListItem({ book }: BookListItemPro
   const [expanded, setExpanded] = useState(false)
   const detailId = useId()
 
-  const toggleButton = (
-    <Button
-      variant="light"
-      className={styles.detailButton}
-      aria-expanded={expanded}
-      aria-controls={detailId}
-      onClick={() => setExpanded((prev) => !prev)}
-    >
-      상세보기
-      <img
-        src={chevron}
-        alt=""
-        width={8}
-        height={14}
-        className={cx(styles.chevron, expanded && styles.chevronUp)}
-      />
-    </Button>
-  )
-
-  const buyButton = (wide: boolean) => (
-    <LinkButton
-      href={book.url}
-      target="_blank"
-      rel="noopener noreferrer"
-      className={wide ? styles.buyButtonWide : styles.buyButton}
-    >
-      구매하기
-    </LinkButton>
-  )
+  const toggle = () => setExpanded((prev) => !prev)
 
   if (!expanded) {
     return (
@@ -60,8 +32,8 @@ export const BookListItem = memo(function BookListItem({ book }: BookListItemPro
           </div>
           <strong className={styles.price}>{formatPrice(getDisplayPrice(book))}</strong>
           <div className={styles.actions}>
-            {buyButton(false)}
-            {toggleButton}
+            <BuyButton url={book.url} />
+            <DetailToggleButton expanded={expanded} controls={detailId} onToggle={toggle} />
           </div>
         </div>
       </li>
@@ -83,7 +55,7 @@ export const BookListItem = memo(function BookListItem({ book }: BookListItemPro
           <p className={styles.intro}>{book.contents || '책 소개가 없습니다.'}</p>
         </div>
         <div className={styles.detailSide}>
-          {toggleButton}
+          <DetailToggleButton expanded={expanded} controls={detailId} onToggle={toggle} />
           <div className={styles.purchase}>
             <dl className={styles.prices}>
               <div className={styles.priceRow}>
@@ -99,10 +71,59 @@ export const BookListItem = memo(function BookListItem({ book }: BookListItemPro
                 </div>
               )}
             </dl>
-            {buyButton(true)}
+            <BuyButton url={book.url} wide />
           </div>
         </div>
       </div>
     </li>
   )
 })
+
+interface DetailToggleButtonProps {
+  expanded: boolean
+  /** 펼쳐지는 상세 영역의 id (aria-controls) */
+  controls: string
+  onToggle: () => void
+}
+
+/** "상세보기" 버튼. 펼침 여부에 따라 화살표 방향이 바뀐다. */
+function DetailToggleButton({ expanded, controls, onToggle }: DetailToggleButtonProps) {
+  return (
+    <Button
+      variant="light"
+      className={styles.detailButton}
+      aria-expanded={expanded}
+      aria-controls={controls}
+      onClick={onToggle}
+    >
+      상세보기
+      <img
+        src={chevron}
+        alt=""
+        width={8}
+        height={14}
+        className={cx(styles.chevron, expanded && styles.chevronUp)}
+      />
+    </Button>
+  )
+}
+
+interface BuyButtonProps {
+  url: string
+  /** 펼친 상세에서 쓰는 넓은 버튼(240px). 기본은 목록용(115px) */
+  wide?: boolean
+}
+
+/** 책 상세 페이지를 새 탭으로 여는 "구매하기" 버튼 */
+function BuyButton({ url, wide = false }: BuyButtonProps) {
+  return (
+    <LinkButton
+      href={url}
+      target="_blank"
+      rel="noopener noreferrer"
+      className={wide ? styles.buyButtonWide : styles.buyButton}
+    >
+      구매하기
+    </LinkButton>
+  )
+}

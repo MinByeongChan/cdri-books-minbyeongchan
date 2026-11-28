@@ -130,6 +130,7 @@ src
 
 ### 코드 가독성 및 유지보수성
 - **화면과 로직을 분리했습니다.** API 호출은 `api/`, 서버 상태는 `hooks/useBookSearch`, URL 상태는 `hooks/useBookSearchState`, 로컬 저장 상태는 `stores/`에 두었습니다. 페이지 컴포넌트는 이것들을 조합만 합니다.
+- **JSX를 반환하는 함수 대신 컴포넌트를 씁니다.** `renderResult()` 같은 함수나 JSX를 담은 변수 대신, 같은 파일 안의 모듈 레벨 컴포넌트(`SearchResult`, `SearchResultBody`, `BuyButton`, `DetailToggleButton`)로 나눴습니다. 부모 컴포넌트 안에서 컴포넌트를 정의하지 않습니다. 그렇게 하면 렌더링마다 새 컴포넌트로 인식돼 하위 트리가 다시 마운트되고, 펼침 같은 상태가 초기화되기 때문입니다.
 - **규칙은 순수 함수로 뽑았습니다.** "검색 기록 최대 8개, 중복 제거"(`addHistory`), "할인가가 -1이면 할인 없음"(`hasDiscount`) 같은 규칙을 순수 함수로 분리해서 단위 테스트를 붙였습니다.
 - **타입을 API 응답에 맞췄습니다.** API 응답 타입(`Book`, `BookSearchResponse`)을 정의했고, 검색 조건 `target`은 문자열 대신 유니언 타입(`'title' | 'person' | 'publisher'`)으로 다룹니다.
 - **테스트는 사용자 동작 기준으로 썼습니다.** `SearchPage.test.tsx`에서 검색, 상세보기, 할인가 미노출, 찜 토글, 상세 검색, API 오류를 확인합니다. 스토어(찜 토글·저장·탭 간 동기화)와 순수 함수 단위 테스트를 합쳐 19개입니다.
