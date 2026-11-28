@@ -1,8 +1,8 @@
-import { useCallback, useRef, useState, type FormEvent } from 'react'
+import { useCallback, useId, useRef, useState, type FocusEvent, type FormEvent } from 'react'
 import type { SearchTarget } from '@/api/types'
 import searchIcon from '@/assets/icons/search.svg'
 import { Button } from '@/components/common/Button'
-import { useOutsideClick } from '@/hooks/useOutsideClick'
+import { useOutsideClick, type DismissEvent } from '@/hooks/useOutsideClick'
 import { useSearchHistoryStore } from '@/stores/searchHistoryStore'
 import { cx } from '@/utils/cx'
 import { DetailSearchPopup } from './DetailSearchPopup'
@@ -40,9 +40,16 @@ export function SearchBox({ query, target, onSearch, onDetailSearch }: SearchBox
   const inputRef = useRef<HTMLInputElement>(null)
 
   const detailSlotRef = useRef<HTMLDivElement>(null)
+  const detailButtonRef = useRef<HTMLButtonElement>(null)
+  const titleId = useId()
+  const inputId = useId()
 
   const closeHistory = useCallback(() => setHistoryOpen(false), [])
-  const closeDetail = useCallback(() => setDetailOpen(false), [])
+  /** 바깥 클릭으로 닫을 때는 사용자가 누른 곳에 포커스를 두고, ESC·닫기 버튼일 때만 열기 버튼으로 돌려보낸다. */
+  const closeDetail = useCallback((event?: DismissEvent) => {
+    setDetailOpen(false)
+    if (event?.type !== 'pointerdown') detailButtonRef.current?.focus()
+  }, [])
   useOutsideClick(fieldRef, closeHistory, isHistoryOpen)
   useOutsideClick(detailSlotRef, closeDetail, isDetailOpen)
 
@@ -61,15 +68,20 @@ export function SearchBox({ query, target, onSearch, onDetailSearch }: SearchBox
     runSearch(keyword)
   }
 
+  /** Tab으로 검색창·검색 기록 밖으로 나가면 검색 기록을 닫는다. */
+  const handleFieldBlur = (event: FocusEvent<HTMLDivElement>) => {
+    if (!event.currentTarget.contains(event.relatedTarget)) setHistoryOpen(false)
+  }
+
   const showHistory = isHistoryOpen && history.length > 0
 
   return (
-    <section className={styles.searchBox} aria-labelledby="search-title">
-      <h2 id="search-title" className={styles.title}>
+    <section className={styles.searchBox} aria-labelledby={titleId}>
+      <h2 id={titleId} className={styles.title}>
         도서 검색
       </h2>
       <div className={styles.row}>
-        <div className={styles.fieldSlot} ref={fieldRef}>
+        <div className={styles.fieldSlot} ref={fieldRef} onBlur={handleFieldBlur}>
           <form
             role="search"
             className={cx(styles.field, showHistory && styles.expanded)}
@@ -77,11 +89,11 @@ export function SearchBox({ query, target, onSearch, onDetailSearch }: SearchBox
           >
             <div className={styles.inputRow}>
               <img src={searchIcon} alt="" width={30} height={30} />
-              <label htmlFor="book-search-input" className="sr-only">
+              <label htmlFor={inputId} className="sr-only">
                 검색어
               </label>
               <input
-                id="book-search-input"
+                id={inputId}
                 ref={inputRef}
                 className={styles.input}
                 type="search"
@@ -104,6 +116,7 @@ export function SearchBox({ query, target, onSearch, onDetailSearch }: SearchBox
 
         <div className={styles.detailSlot} ref={detailSlotRef}>
           <Button
+            ref={detailButtonRef}
             variant="outline"
             size="sm"
             aria-expanded={isDetailOpen}
@@ -116,7 +129,7 @@ export function SearchBox({ query, target, onSearch, onDetailSearch }: SearchBox
             <DetailSearchPopup
               initialQuery={target ? query : ''}
               initialTarget={target}
-              onClose={closeDetail}
+              onClose={() => closeDetail()}
               onSearch={(detailQuery, detailTarget) => {
                 setDetailOpen(false)
                 onDetailSearch(detailQuery, detailTarget)

@@ -32,8 +32,8 @@ export const BookListItem = memo(function BookListItem({ book }: BookListItemPro
           </div>
           <strong className={styles.price}>{formatPrice(getDisplayPrice(book))}</strong>
           <div className={styles.actions}>
-            <BuyButton url={book.url} />
-            <DetailToggleButton expanded={expanded} controls={detailId} onToggle={toggle} />
+            <BuyButton url={book.url} title={book.title} />
+            <DetailToggleButton title={book.title} expanded={expanded} controls={detailId} onToggle={toggle} />
           </div>
         </div>
       </li>
@@ -44,7 +44,7 @@ export const BookListItem = memo(function BookListItem({ book }: BookListItemPro
 
   return (
     <li className={styles.item}>
-      <div className={styles.detail} id={detailId}>
+      <section className={styles.detail} id={detailId} aria-label={`${book.title} 상세 정보`}>
         <BookThumbnail book={book} size="lg" />
         <div className={styles.detailBody}>
           <div className={styles.detailHeading}>
@@ -55,7 +55,7 @@ export const BookListItem = memo(function BookListItem({ book }: BookListItemPro
           <p className={styles.intro}>{book.contents || '책 소개가 없습니다.'}</p>
         </div>
         <div className={styles.detailSide}>
-          <DetailToggleButton expanded={expanded} controls={detailId} onToggle={toggle} />
+          <DetailToggleButton title={book.title} expanded={expanded} controls={detailId} onToggle={toggle} />
           <div className={styles.purchase}>
             <dl className={styles.prices}>
               <div className={styles.priceRow}>
@@ -71,15 +71,17 @@ export const BookListItem = memo(function BookListItem({ book }: BookListItemPro
                 </div>
               )}
             </dl>
-            <BuyButton url={book.url} wide />
+            <BuyButton url={book.url} title={book.title} wide />
           </div>
         </div>
-      </div>
+      </section>
     </li>
   )
 })
 
 interface DetailToggleButtonProps {
+  /** 스크린 리더가 어느 책의 버튼인지 알 수 있게 접근 가능한 이름 앞에 붙인다 */
+  title: string
   expanded: boolean
   /** 펼쳐지는 상세 영역의 id (aria-controls) */
   controls: string
@@ -87,13 +89,14 @@ interface DetailToggleButtonProps {
 }
 
 /** "상세보기" 버튼. 펼침 여부에 따라 화살표 방향이 바뀐다. */
-function DetailToggleButton({ expanded, controls, onToggle }: DetailToggleButtonProps) {
+function DetailToggleButton({ title, expanded, controls, onToggle }: DetailToggleButtonProps) {
   return (
     <Button
       variant="light"
       className={styles.detailButton}
       aria-expanded={expanded}
-      aria-controls={controls}
+      aria-controls={expanded ? controls : undefined}
+      aria-label={`${title} 상세보기`}
       onClick={onToggle}
     >
       상세보기
@@ -110,18 +113,20 @@ function DetailToggleButton({ expanded, controls, onToggle }: DetailToggleButton
 
 interface BuyButtonProps {
   url: string
+  title: string
   /** 펼친 상세에서 쓰는 넓은 버튼(240px). 기본은 목록용(115px) */
   wide?: boolean
 }
 
 /** 책 상세 페이지를 새 탭으로 여는 "구매하기" 버튼 */
-function BuyButton({ url, wide = false }: BuyButtonProps) {
+function BuyButton({ url, title, wide = false }: BuyButtonProps) {
   return (
     <LinkButton
       href={url}
       target="_blank"
       rel="noopener noreferrer"
       className={wide ? styles.buyButtonWide : styles.buyButton}
+      aria-label={`${title} 구매하기 (새 탭에서 열림)`}
     >
       구매하기
     </LinkButton>

@@ -31,6 +31,10 @@
   border-radius: var(--radius-full);
 }
 
+.field:focus-within {
+  box-shadow: 0 0 0 2px var(--color-primary);
+}
+
 .field.expanded {
   border-radius: var(--radius-lg);
 }

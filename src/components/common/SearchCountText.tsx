@@ -9,7 +9,7 @@ const countFormatter = new Intl.NumberFormat('ko-KR')
 
 export function SearchCountText({ label, count }: SearchCountTextProps) {
   return (
-    <p className={styles.countText}>
+    <p className={styles.countText} role="status" aria-live="polite">
       <span>{label}</span>
       <span>
         총 <em className={styles.count}>{countFormatter.format(count)}</em>건

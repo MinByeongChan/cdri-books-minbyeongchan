@@ -30,7 +30,7 @@ export function BookThumbnail({ book, size }: BookThumbnailProps) {
           className={styles.image}
         />
       ) : (
-        <div className={styles.placeholder} aria-label="표지 이미지 없음" />
+        <div className={styles.placeholder} role="img" aria-label={`${book.title} 표지 이미지 없음`} />
       )}
       <LikeButton book={book} size={size === 'sm' ? 'sm' : 'md'} className={styles.like} />
     </div>

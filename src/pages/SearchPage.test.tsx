@@ -96,7 +96,9 @@ describe('SearchPage', () => {
     await user.click(await screen.findByRole('button', { name: '노르웨이의 숲 찜하기' }))
     expect(useWishlistStore.getState().books).toHaveLength(1)
 
-    await user.click(screen.getByRole('button', { name: '노르웨이의 숲 찜 해제' }))
+    expect(screen.getByRole('button', { name: '노르웨이의 숲 찜하기', pressed: true })).toBeInTheDocument()
+
+    await user.click(screen.getByRole('button', { name: '노르웨이의 숲 찜하기', pressed: true }))
     expect(useWishlistStore.getState().books).toHaveLength(0)
   })
 
@@ -116,6 +118,39 @@ describe('SearchPage', () => {
     expect(lastRequestUrl().searchParams.get('target')).toBe('publisher')
     expect(lastRequestUrl().searchParams.get('query')).toBe('민음사')
     expect(screen.getByRole('searchbox')).toHaveValue('')
+  })
+
+  it('ESC를 누르면 드롭다운만 먼저 닫고, 한 번 더 누르면 팝업을 닫고 상세검색 버튼으로 포커스를 돌려준다', async () => {
+    const user = userEvent.setup()
+    renderPage()
+
+    const opener = screen.getByRole('button', { name: '상세검색' })
+    await user.click(opener)
+    const dialog = screen.getByRole('dialog', { name: '상세 검색' })
+    expect(within(dialog).getByPlaceholderText('검색어 입력')).toHaveFocus()
+
+    const trigger = within(dialog).getByRole('button', { name: '검색 조건: 제목' })
+    await user.click(trigger)
+    expect(trigger).toHaveAttribute('aria-expanded', 'true')
+
+    await user.keyboard('{Escape}')
+    expect(trigger).toHaveAttribute('aria-expanded', 'false')
+    expect(trigger).toHaveFocus()
+    expect(screen.getByRole('dialog')).toBeInTheDocument()
+
+    await user.keyboard('{Escape}')
+    expect(screen.queryByRole('dialog')).not.toBeInTheDocument()
+    expect(opener).toHaveFocus()
+  })
+
+  it('목록 버튼 이름에 책 제목이 들어가서 스크린 리더가 어느 책인지 알 수 있다', async () => {
+    renderPage('/?query=하루키')
+    await screen.findByRole('heading', { name: '노르웨이의 숲' })
+    expect(screen.getByRole('button', { name: '노르웨이의 숲 상세보기' })).toBeInTheDocument()
+    expect(screen.getByRole('link', { name: '노르웨이의 숲 구매하기 (새 탭에서 열림)' })).toHaveAttribute(
+      'target',
+      '_blank',
+    )
   })
 
   it('API 오류가 나면 오류 메시지를 보여준다', async () => {

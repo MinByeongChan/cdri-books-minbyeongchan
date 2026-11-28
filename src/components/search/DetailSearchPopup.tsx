@@ -1,4 +1,4 @@
-import { useEffect, useRef, useState, type FormEvent } from 'react'
+import { useEffect, useId, useRef, useState, type FormEvent } from 'react'
 import type { SearchTarget } from '@/api/types'
 import closeIcon from '@/assets/icons/close-small.svg'
 import { Button } from '@/components/common/Button'
@@ -21,6 +21,7 @@ export function DetailSearchPopup({ initialQuery, initialTarget = 'title', onSea
   const [target, setTarget] = useState<SearchTarget>(initialTarget)
   const [query, setQuery] = useState(initialQuery)
   const inputRef = useRef<HTMLInputElement>(null)
+  const inputId = useId()
 
   useEffect(() => {
     inputRef.current?.focus()
@@ -37,18 +38,18 @@ export function DetailSearchPopup({ initialQuery, initialTarget = 'title', onSea
   }
 
   return (
-    <div className={styles.popup} role="dialog" aria-label="상세 검색">
+    <dialog open className={styles.popup} aria-label="상세 검색">
       <button type="button" className={styles.close} aria-label="상세 검색 닫기" onClick={onClose}>
         <img src={closeIcon} alt="" width={11.67} height={11.67} />
       </button>
       <form onSubmit={handleSubmit}>
         <div className={styles.fields}>
           <TargetSelect value={target} onChange={setTarget} />
-          <label htmlFor="detail-search-input" className="sr-only">
+          <label htmlFor={inputId} className="sr-only">
             상세 검색어
           </label>
           <input
-            id="detail-search-input"
+            id={inputId}
             ref={inputRef}
             className={styles.input}
             placeholder="검색어 입력"
@@ -61,6 +62,6 @@ export function DetailSearchPopup({ initialQuery, initialTarget = 'title', onSea
           검색하기
         </Button>
       </form>
-    </div>
+    </dialog>
   )
 }

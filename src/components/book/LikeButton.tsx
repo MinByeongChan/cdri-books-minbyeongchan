@@ -31,7 +31,7 @@ export const LikeButton = memo(function LikeButton({ book, size = 'md', classNam
       type="button"
       className={cx(styles.likeButton, className)}
       aria-pressed={isWished}
-      aria-label={isWished ? `${book.title} 찜 해제` : `${book.title} 찜하기`}
+      aria-label={`${book.title} 찜하기`}
       onClick={(event) => {
         event.stopPropagation()
         toggle(book)
